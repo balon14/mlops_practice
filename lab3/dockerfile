@@ -1,11 +1,17 @@
-FROM python:3.8
+FROM python:3.9
+
+RUN apt update
+
+RUN apt install uvicorn -y
+
+RUN mkdir -m 777 /app
 
 WORKDIR /app
 
-COPY . /app
+COPY requirements.txt .
 
-RUN pip install --no-cache-dir streamlit rembg Pillow
+RUN pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 8501
+COPY . .
 
-CMD ["streamlit", "run", "bg_remove.py"]
+ENTRYPOINT ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
